@@ -1,0 +1,36 @@
+export const SEAL_PRICE_CENTS = 200;
+export const SEAL_CURRENCY = "usd";
+export const SEAL_LABEL = "Time capsule seal";
+
+export function isDemoMode(): boolean {
+  const flag = process.env.DEMO_MODE ?? process.env.NEXT_PUBLIC_DEMO_MODE;
+  if (flag === "true" || flag === "1") return true;
+  if (flag === "false" || flag === "0") return false;
+  return !process.env.STRIPE_SECRET_KEY;
+}
+
+export function appUrl(): string {
+  if (process.env.NEXT_PUBLIC_APP_URL) {
+    return process.env.NEXT_PUBLIC_APP_URL.replace(/\/$/, "");
+  }
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}`;
+  }
+  return "http://localhost:3000";
+}
+
+export function signingSecret(): string {
+  return process.env.CAPSULE_SIGNING_SECRET || "demo-signing-secret-not-for-production";
+}
+
+export function hasSupabase(): boolean {
+  return Boolean(process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY);
+}
+
+export function hasResend(): boolean {
+  return Boolean(process.env.RESEND_API_KEY);
+}
+
+export function hasStripe(): boolean {
+  return Boolean(process.env.STRIPE_SECRET_KEY);
+}
