@@ -13,17 +13,11 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const { locale, path } = stripLocalePrefix(pathname);
+  const { locale } = stripLocalePrefix(pathname);
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set("x-yak-locale", locale);
 
-  const response =
-    locale === "en"
-      ? NextResponse.rewrite(new URL(path + request.nextUrl.search, request.url), {
-          request: { headers: requestHeaders },
-        })
-      : NextResponse.next({ request: { headers: requestHeaders } });
-
+  const response = NextResponse.next({ request: { headers: requestHeaders } });
   response.cookies.set(LOCALE_COOKIE, locale, {
     path: "/",
     maxAge: 60 * 60 * 24 * 365,

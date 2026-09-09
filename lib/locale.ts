@@ -12,6 +12,17 @@ export async function getLocale(): Promise<Locale> {
   const headerStore = await headers();
   const fromHeader = headerStore.get("x-yak-locale");
   if (isLocale(fromHeader)) return fromHeader;
+
+  const pathHint =
+    headerStore.get("x-url") ||
+    headerStore.get("next-url") ||
+    headerStore.get("x-invoke-path") ||
+    headerStore.get("x-matched-path") ||
+    "";
+  if (pathHint.includes("/en/") || pathHint.endsWith("/en") || pathHint.includes("/en?")) {
+    return "en";
+  }
+
   const cookieStore = await cookies();
   const fromCookie = cookieStore.get(LOCALE_COOKIE)?.value;
   if (isLocale(fromCookie)) return fromCookie;
