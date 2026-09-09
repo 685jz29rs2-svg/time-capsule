@@ -19,19 +19,19 @@ function nowIso(): string {
   return new Date().toISOString();
 }
 
-export function createDraft(input: CapsuleDraft): Capsule {
+export function createDraft(input: CapsuleDraft, status: CapsuleStatus = "pending_payment"): Capsule {
   const id = newId();
   return {
     id,
     token: id,
-    senderName: input.senderName.trim(),
+    senderName: (input.senderName ?? "").trim(),
     recipientEmail: input.recipientEmail.trim().toLowerCase(),
     body: input.body.trim(),
     openAt: new Date(input.openAt).toISOString(),
     createdAt: nowIso(),
     sealedAt: null,
     deliveredAt: null,
-    status: "draft",
+    status,
     stripeSessionId: null,
   };
 }
@@ -77,12 +77,17 @@ function toRow(capsule: Capsule) {
   };
 }
 
-export async function saveCapsule(capsule: Capsule): Promise<Capsule> {
-  memoryStore().set(capsule.token, capsule);
-  memoryStore().set(capsule.id, capsule);
+function indexCapsule(capsule: Capsule) {
+  const store = memoryStore();
+  store.set(capsule.token, capsule);
+  store.set(capsule.id, capsule);
   if (capsule.stripeSessionId) {
-    memoryStore().set(`stripe:${capsule.stripeSessionId}`, capsule);
+    store.set(`stripe:${capsule.stripeSessionId}`, capsule);
   }
+}
+
+export async function saveCapsule(capsule: Capsule): Promise<Capsule> {
+  indexCapsule(capsule);
   if (hasSupabase()) {
     const { error } = await getSupabase().from("capsules").upsert(toRow(capsule), {
       onConflict: "id",
@@ -111,7 +116,7 @@ export async function getCapsuleByToken(token: string): Promise<Capsule | null> 
   if (error) throw new Error(`Supabase read failed: ${error.message}`);
   if (data) {
     const capsule = fromRow(data);
-    memoryStore().set(capsule.token, capsule);
+    indexCapsule(capsule);
     return capsule;
   }
   return null;
@@ -157,7 +162,19 @@ export async function listDueCapsules(now = new Date()): Promise<Capsule[]> {
   return due;
 }
 
+export function isSealed(capsule: Capsule): boolean {
+  return capsule.status === "sealed" || capsule.status === "delivered";
+}
+
 export function isOpenable(capsule: Capsule, now = new Date()): boolean {
-  if (capsule.status === "draft") return false;
+  if (!isSealed(capsule)) return false;
   return new Date(capsule.openAt) <= now;
+}
+
+export function publicCard(capsule: Capsule) {
+  return {
+    id: capsule.id,
+    openAt: capsule.openAt,
+    status: capsule.status,
+  };
 }

@@ -1,4 +1,4 @@
-export type CapsuleStatus = "draft" | "sealed" | "delivered";
+export type CapsuleStatus = "draft" | "pending_payment" | "sealed" | "delivered";
 
 export type Capsule = {
   id: string;
@@ -15,8 +15,14 @@ export type Capsule = {
 };
 
 export type CapsuleDraft = {
-  senderName: string;
+  senderName?: string;
   recipientEmail: string;
   body: string;
   openAt: string;
+};
+
+export type PublicCapsuleCard = {
+  id: string;
+  openAt: string;
+  status: CapsuleStatus;
 };

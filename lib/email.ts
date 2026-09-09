@@ -1,5 +1,7 @@
 import { Resend } from "resend";
 import { appUrl, hasResend, isDemoMode } from "@/lib/env";
+import { getMessages } from "@/lib/i18n";
+import { formatSeoul } from "@/lib/seoul";
 import type { Capsule } from "@/lib/types";
 
 let cached: Resend | null = null;
@@ -15,21 +17,19 @@ function fromAddress(): string {
   return process.env.RESEND_FROM || "약속 <noreply@example.com>";
 }
 
-export function deliveryEmail(capsule: Capsule): { subject: string; html: string } {
-  const openHref = `${appUrl()}/open/${capsule.token}`;
-  const when = new Date(capsule.openAt).toLocaleString("ko-KR", {
-    dateStyle: "long",
-    timeStyle: "short",
-  });
-  const from = capsule.senderName.trim() || "누군가";
+export function deliveryEmail(capsule: Capsule, locale: "ko" | "en" = "ko"): { subject: string; html: string } {
+  const t = getMessages(locale);
+  const openHref = `${appUrl()}/c/${capsule.token}`;
+  const when = formatSeoul(capsule.openAt, locale);
   return {
-    subject: `약속이 열렸습니다 — ${from}`,
+    subject: `${t.email.subject} — ${when}`,
     html: `
-      <div style="font-family: Georgia, 'Noto Serif KR', serif; color:#3b2a22; background:#f7f1e8; padding:32px;">
-        <p style="letter-spacing:.3em; font-size:12px; color:#8a6a58;">약 속</p>
-        <h1 style="font-weight:500; font-size:28px;">봉인이 풀렸습니다</h1>
-        <p>${from}님이 ${when}을 위해 남긴 말이 도착했습니다.</p>
-        <p><a href="${openHref}" style="color:#7a2e2e;">캡슐 열기</a></p>
+      <div style="font-family: Georgia, 'Noto Serif KR', serif; color:#2a2118; background:#f4ead8; padding:32px;">
+        <p style="letter-spacing:.3em; font-size:12px; color:#2f5c38;">${t.brand.header}</p>
+        <h1 style="font-weight:500; font-size:28px;">${t.email.heading}</h1>
+        <p>${t.email.intro}</p>
+        <p>${when}</p>
+        <p><a href="${openHref}" style="color:#2f5c38;">${t.email.cta}</a></p>
       </div>
     `,
   };

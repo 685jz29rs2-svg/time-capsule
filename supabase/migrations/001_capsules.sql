@@ -9,7 +9,8 @@ create table if not exists public.capsules (
   created_at timestamptz not null default now(),
   sealed_at timestamptz,
   delivered_at timestamptz,
-  status text not null default 'draft' check (status in ('draft', 'sealed', 'delivered')),
+  status text not null default 'pending_payment'
+    check (status in ('draft', 'pending_payment', 'sealed', 'delivered')),
   stripe_session_id text unique
 );
 

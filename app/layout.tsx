@@ -1,22 +1,19 @@
 import type { Metadata } from "next";
-import { Instrument_Serif, Nanum_Pen_Script, Noto_Serif_KR } from "next/font/google";
-import { DemoBanner } from "@/components/DemoBanner";
-import { Header } from "@/components/Header";
-import { WatercolorBackdrop } from "@/components/WatercolorBackdrop";
-import { isDemoMode } from "@/lib/env";
+import { Nanum_Pen_Script, Noto_Sans_KR, Noto_Serif_KR } from "next/font/google";
+import { AppHeader } from "@/components/AppHeader";
+import { getDictionary } from "@/lib/locale";
 import "./globals.css";
 
-const serif = Noto_Serif_KR({
-  variable: "--font-serif",
+const sans = Noto_Sans_KR({
+  variable: "--font-noto-sans",
   subsets: ["latin"],
   weight: ["400", "500", "600"],
 });
 
-const display = Instrument_Serif({
-  variable: "--font-display",
+const serif = Noto_Serif_KR({
+  variable: "--font-noto-serif",
   subsets: ["latin"],
-  weight: "400",
-  style: ["normal", "italic"],
+  weight: ["400", "500", "600"],
 });
 
 const hand = Nanum_Pen_Script({
@@ -27,24 +24,25 @@ const hand = Nanum_Pen_Script({
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-  title: "약속 — Digital Time Capsule",
-  description:
-    "Digital time-capsule captures and seals the present moment, delivering it at a time chosen by the user.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = await getDictionary();
+  return {
+    title: t.meta.title,
+    description: t.meta.description,
+  };
+}
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const { locale, t } = await getDictionary();
   return (
     <html
-      lang="ko"
-      className={`${serif.variable} ${display.variable} ${hand.variable} h-full antialiased`}
+      lang={locale}
+      className={`${sans.variable} ${serif.variable} ${hand.variable} h-full antialiased`}
     >
-      <body className="watercolor-page min-h-full">
-        <WatercolorBackdrop />
-        <div className="relative z-10 mx-auto flex min-h-full w-full max-w-3xl flex-col px-5 pb-16 pt-8 sm:px-8">
-          <Header />
-          {isDemoMode() ? <DemoBanner /> : null}
-          <main className="flex flex-1 flex-col">{children}</main>
+      <body className="flex min-h-full flex-col">
+        <div className="flex min-h-dvh flex-col">
+          <AppHeader locale={locale} t={t} />
+          {children}
         </div>
       </body>
     </html>
