@@ -6,19 +6,19 @@ import { getDictionary } from "@/lib/locale";
 
 export default async function HomePage() {
   const { locale, t } = await getDictionary();
+  const titleLines = t.home.title.split("\n");
   return (
     <PageFrame center>
       <Mark size={96} label={t.brand.mark} />
       <h1 className="mt-6 font-serif text-[1.75rem] leading-tight tracking-tight sm:text-3xl">
-        {t.home.titleBefore}
-        {t.home.titleAfter ? (
-          <>
-            <br />
-            {t.home.titleAfter}
-          </>
-        ) : null}
+        {titleLines.map((line, index) => (
+          <span key={`${line}-${index}`}>
+            {line}
+            {index < titleLines.length - 1 ? <br /> : null}
+          </span>
+        ))}
       </h1>
-      <p className="mt-4 max-w-sm text-[15px] leading-7 text-muted-foreground">{t.home.lead}</p>
+      <p className="mt-4 max-w-sm text-[15px] leading-7 text-muted-foreground">{t.home.subtitle}</p>
       <PrimaryLink href={localizedPath(locale, "/new")} className="mt-10">
         {t.home.cta}
       </PrimaryLink>

@@ -24,8 +24,8 @@ export default async function NewPage({
 
   return (
     <PageFrame>
-      <h1 className="font-serif text-2xl">{t.create.title}</h1>
-      <p className="mt-2 text-sm leading-6 text-muted-foreground">{t.create.lead}</p>
+      <h1 className="font-serif text-2xl">{t.write.title}</h1>
+      <p className="mt-2 text-sm leading-6 text-muted-foreground">{t.write.hint}</p>
       <div className="mt-6 sm:mt-8">
         <CreateForm
           locale={locale}

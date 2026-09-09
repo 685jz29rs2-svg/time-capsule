@@ -22,14 +22,15 @@ export function deliveryEmail(capsule: Capsule, locale: "ko" | "en" = "ko"): { s
   const openHref = `${appUrl()}/c/${capsule.token}`;
   const when = formatSeoul(capsule.openAt, locale);
   return {
-    subject: `${t.email.subject} — ${when}`,
+    subject: t.open_email.subject,
     html: `
       <div style="font-family: Georgia, 'Noto Serif KR', serif; color:#2a2118; background:#f4ead8; padding:32px;">
+        <div style="display:none;max-height:0;overflow:hidden;">${t.open_email.preheader}</div>
         <p style="letter-spacing:.3em; font-size:12px; color:#2f5c38;">${t.brand.header}</p>
-        <h1 style="font-weight:500; font-size:28px;">${t.email.heading}</h1>
-        <p>${t.email.intro}</p>
+        <h1 style="font-weight:500; font-size:28px;">${t.open_email.preheader}</h1>
+        <p>${t.open_email.body}</p>
         <p>${when}</p>
-        <p><a href="${openHref}" style="color:#2f5c38;">${t.email.cta}</a></p>
+        <p><a href="${openHref}" style="color:#2f5c38;">${t.open_email.cta}</a></p>
       </div>
     `,
   };

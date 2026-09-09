@@ -18,7 +18,7 @@ export function AppHeader({ locale, t }: { locale: Locale; t: Messages }) {
           className="flex min-h-11 items-center gap-2 font-serif text-lg tracking-tight"
         >
           <Mark size={28} label={null} />
-          <span>{locale === "en" ? t.brand.headerBilingual : t.brand.header}</span>
+          <span>{locale === "en" ? t.brand.header_bilingual : t.brand.header}</span>
         </Link>
         <nav className="flex items-center gap-3 text-sm font-medium text-[color:var(--wax)] sm:gap-4">
           <LangSwitch locale={locale} path={path} t={t} />

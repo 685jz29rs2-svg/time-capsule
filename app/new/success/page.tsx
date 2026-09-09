@@ -76,7 +76,7 @@ export default async function SuccessPage({
       )}
       <p className="mt-3 max-w-sm text-sm leading-6 text-muted-foreground">{t.success.body}</p>
       <PrimaryLink href={localizedPath(locale, "/capsules")} className="mt-8">
-        {t.success.list}
+        {t.success.cta}
       </PrimaryLink>
     </PageFrame>
   );
