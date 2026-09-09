@@ -28,7 +28,10 @@ export default async function CapsuleOpenPage({
         <Mark size={88} label={t.brand.mark} />
         <p className="mt-5 text-xs uppercase tracking-wide text-[color:var(--wax)]">{t.open.lockedEyebrow}</p>
         <h1 className="mt-2 font-serif text-2xl">{t.open.lockedTitle}</h1>
-        <p className="mt-3 max-w-sm text-sm leading-6 text-muted-foreground">{t.open.lockedBody}</p>
+        <p className="mt-3 max-w-sm text-sm leading-6 text-muted-foreground">
+          {t.open.lockedBody.replace("{date}", until)}
+        </p>
+        <p className="mt-3 max-w-sm text-sm text-muted-foreground">{t.open.hint}</p>
         <p className="mt-6 text-sm text-muted-foreground">{t.open.until}</p>
         <p className="font-serif text-lg">{until}</p>
       </PageFrame>
